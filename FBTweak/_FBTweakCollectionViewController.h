@@ -15,7 +15,7 @@
 /**
   @abstract Displays configuration options for tweak collections.
  */
-@interface _FBTweakCollectionViewController : UIViewController
+@interface _FBTweakCollectionViewController : UITableViewController
 
 /**
   @abstract Create a tweak collection view controller.
