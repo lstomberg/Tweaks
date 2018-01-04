@@ -62,6 +62,11 @@ typedef void (^FBTweakCategoryUpdateBlock)(NSError * _Nullable error);
 - (void)removeTweakCollection:(FBTweakCollection *)tweakCollection;
 
 /**
+ @abstract Resets all tweaks in \c tweakCollections to their default value.
+ */
+- (void)reset;
+
+/**
  @abstract Asynchronously updates \c tweakCollections to the latest value, and calls \c completion
  when done. Error is reported by the means of \c completion's \c error argument, which is set upon
  an error or \c nil otherwise.

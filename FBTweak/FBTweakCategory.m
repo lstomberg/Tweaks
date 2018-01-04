@@ -7,6 +7,7 @@
  of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import "FBTweak.h"
 #import "FBTweakCategory.h"
 #import "FBTweakCollection.h"
 
@@ -71,6 +72,16 @@
 {
   [_orderedCollections removeObject:tweakCollection];
   [_namedCollections removeObjectForKey:tweakCollection.name];
+}
+
+- (void)reset {
+  for (FBTweakCollection *collection in self.tweakCollections) {
+    for (FBTweak *tweak in collection.tweaks) {
+      if (!tweak.isAction) {
+        tweak.currentValue = nil;
+      }
+    }
+  }
 }
 
 - (void)updateWithCompletion:(FBTweakCategoryUpdateBlock)completion {
