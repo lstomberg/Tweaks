@@ -70,4 +70,8 @@
   [_namedCollections removeObjectForKey:tweakCollection.name];
 }
 
+- (void)updateWithCompletion:(FBTweakCategoryUpdateBlock)completion {
+  completion(nil);
+}
+
 @end
