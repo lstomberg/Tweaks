@@ -21,11 +21,18 @@ typedef void (^FBTweakCategoryUpdateBlock)(NSError * _Nullable error);
  */
 @interface FBTweakCategory : NSObject <NSCoding>
 
+- (instancetype)init NS_UNAVAILABLE;
+
 /**
   @abstract Creates a tweak category.
-  @discussion This is the designated initializer.
  */
 - (instancetype)initWithName:(NSString *)name;
+
+/**
+ @abstract Creates a tweak category with an initial tweak collections.
+ */
+- (instancetype)initWithName:(NSString *)name tweakCollections:(NSArray<FBTweakCollection *> *)tweakCollections NS_DESIGNATED_INITIALIZER;
+
 
 /**
   @abstract The name of the category.

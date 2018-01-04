@@ -18,27 +18,27 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
   NSString *name = [coder decodeObjectForKey:@"name"];
-  
-  if ((self = [self initWithName:name])) {
-    _orderedCollections = [[coder decodeObjectForKey:@"collections"] mutableCopy];
-    
-    for (FBTweakCollection *tweakCollection in _orderedCollections) {
-      [_namedCollections setObject:tweakCollection forKey:tweakCollection.name];
-    }
-  }
-  
-  return self;
+  NSArray<FBTweakCollection *> *collections = [coder decodeObjectForKey:@"collections"];
+
+  return [self initWithName:name tweakCollections:collections];
 }
 
 - (instancetype)initWithName:(NSString *)name
 {
+  return [self initWithName:name tweakCollections:@[]];
+}
+
+- (instancetype)initWithName:(NSString *)name
+            tweakCollections:(NSArray<FBTweakCollection *> *)tweakCollections {
   if ((self = [super init])) {
     _name = [name copy];
-    
-    _orderedCollections = [[NSMutableArray alloc] initWithCapacity:4];
+
+    _orderedCollections = [tweakCollections mutableCopy];
     _namedCollections = [[NSMutableDictionary alloc] initWithCapacity:4];
+    for (FBTweakCollection *tweakCollection in _orderedCollections) {
+      [_namedCollections setObject:tweakCollection forKey:tweakCollection.name];
+    }
   }
-  
   return self;
 }
 
