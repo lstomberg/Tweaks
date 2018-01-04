@@ -33,7 +33,6 @@ typedef void (^FBTweakCategoryUpdateBlock)(NSError * _Nullable error);
  */
 - (instancetype)initWithName:(NSString *)name tweakCollections:(NSArray<FBTweakCollection *> *)tweakCollections NS_DESIGNATED_INITIALIZER;
 
-
 /**
   @abstract The name of the category.
  */
@@ -42,7 +41,7 @@ typedef void (^FBTweakCategoryUpdateBlock)(NSError * _Nullable error);
 /**
   @abstract The collections contained in this category.
  */
-@property (nonatomic, copy, readonly) NSArray<FBTweakCollection *> *tweakCollections;
+@property (nonatomic, copy) NSArray<FBTweakCollection *> *tweakCollections;
 
 /**
   @abstract Fetches a collection by name.

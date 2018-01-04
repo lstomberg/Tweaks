@@ -32,14 +32,17 @@
             tweakCollections:(NSArray<FBTweakCollection *> *)tweakCollections {
   if ((self = [super init])) {
     _name = [name copy];
-
-    _orderedCollections = [tweakCollections mutableCopy];
-    _namedCollections = [[NSMutableDictionary alloc] initWithCapacity:4];
-    for (FBTweakCollection *tweakCollection in _orderedCollections) {
-      [_namedCollections setObject:tweakCollection forKey:tweakCollection.name];
-    }
+    self.tweakCollections = tweakCollections;
   }
   return self;
+}
+
+- (void)setTweakCollections:(NSArray<FBTweakCollection *> *)tweakCollections {
+  _orderedCollections = [tweakCollections mutableCopy];
+  _namedCollections = [[NSMutableDictionary alloc] initWithCapacity:4];
+  for (FBTweakCollection *tweakCollection in _orderedCollections) {
+    [_namedCollections setObject:tweakCollection forKey:tweakCollection.name];
+  }
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
