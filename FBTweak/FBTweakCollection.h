@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class FBTweak;
+@protocol FBTweak;
 
 /**
   @abstract A named collection of tweaks.
@@ -37,18 +37,18 @@
   @param identifier The tweak identifier to find.
   @discussion Only search tweaks in this collection.
  */
-- (FBTweak *)tweakWithIdentifier:(NSString *)identifier;
+- (id<FBTweak>)tweakWithIdentifier:(NSString *)identifier;
 
 /**
   @abstract Adds a tweak to the collection.
   @param tweak The tweak to add.
  */
-- (void)addTweak:(FBTweak *)tweak;
+- (void)addTweak:(id<FBTweak>)tweak;
 
 /**
   @abstract Removes a tweak from the collection.
   @param tweak The tweak to remove.
  */
-- (void)removeTweak:(FBTweak *)tweak;
+- (void)removeTweak:(id<FBTweak>)tweak;
 
 @end

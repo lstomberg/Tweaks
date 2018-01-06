@@ -22,7 +22,7 @@
   if ((self = [self initWithName:name])) {
     _orderedTweaks = [[coder decodeObjectForKey:@"tweaks"] mutableCopy];
     
-    for (FBTweak *tweak in _orderedTweaks) {
+    for (id<FBTweak> tweak in _orderedTweaks) {
       [_identifierTweaks setObject:tweak forKey:tweak.identifier];
     }
   }
@@ -48,7 +48,7 @@
   [coder encodeObject:_orderedTweaks forKey:@"tweaks"];
 }
 
-- (FBTweak *)tweakWithIdentifier:(NSString *)identifier
+- (id<FBTweak>)tweakWithIdentifier:(NSString *)identifier
 {
   return _identifierTweaks[identifier];
 }
@@ -58,13 +58,13 @@
   return [_orderedTweaks copy];
 }
 
-- (void)addTweak:(FBTweak *)tweak
+- (void)addTweak:(id<FBTweak>)tweak
 {
   [_orderedTweaks addObject:tweak];
   [_identifierTweaks setObject:tweak forKey:tweak.identifier];
 }
 
-- (void)removeTweak:(FBTweak *)tweak
+- (void)removeTweak:(id<FBTweak>)tweak
 {
   [_orderedTweaks removeObject:tweak];
   [_identifierTweaks removeObjectForKey:tweak.identifier];

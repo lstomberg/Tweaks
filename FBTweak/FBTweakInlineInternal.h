@@ -98,9 +98,9 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
   FBTweakCollection *collection = [category tweakCollectionWithName:collection__]; \
 \
   NSString *identifier = _FBTweakIdentifier(&entry); \
-  FBTweak *__inline_tweak = [collection tweakWithIdentifier:identifier]; \
+  id<FBTweak> __inline_tweak = [collection tweakWithIdentifier:identifier]; \
 \
-  return __inline_tweak; \
+  return (FBPersistentTweak *)__inline_tweak; \
 })())
 #define _FBTweakInline(category_, collection_, name_, ...) _FBTweakDispatch(_FBTweakInlineWithoutRange, _FBTweakInlineWithRange, _FBTweakInlineWithPossible, __VA_ARGS__)(category_, collection_, name_, __VA_ARGS__)
   
@@ -143,34 +143,34 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
 
 #define _FBTweakValueWithoutRange(category_, collection_, name_, default_) \
 ((^{ \
-    FBTweak *__value_tweak = _FBTweakInlineWithoutRange(category_, collection_, name_, default_); \
+    FBPersistentTweak *__value_tweak = _FBTweakInlineWithoutRange(category_, collection_, name_, default_); \
     return _FBTweakValueInternal(__value_tweak, category_, collection_, name_, default_); \
 })())
 #define _FBTweakValueWithRange(category_, collection_, name_, default_, min_, max_) \
 ((^{ \
-  FBTweak *__value_tweak = _FBTweakInlineWithRange(category_, collection_, name_, default_, min_, max_); \
+  FBPersistentTweak *__value_tweak = _FBTweakInlineWithRange(category_, collection_, name_, default_, min_, max_); \
   return _FBTweakValueInternal(__value_tweak, category_, collection_, name_, default_); \
 })())
 #define _FBTweakValueWithPossible(category_, collection_, name_, default_, possible_) \
 ((^{ \
-  FBTweak *__value_tweak = _FBTweakInlineWithPossible(category_, collection_, name_, default_, possible_); \
+  FBPersistentTweak *__value_tweak = _FBTweakInlineWithPossible(category_, collection_, name_, default_, possible_); \
   return _FBTweakValueInternal(__value_tweak, category_, collection_, name_, default_); \
 })())
 #define _FBTweakValue(category_, collection_, name_, ...) _FBTweakDispatch(_FBTweakValueWithoutRange, _FBTweakValueWithRange, _FBTweakValueWithPossible, __VA_ARGS__)(category_, collection_, name_, __VA_ARGS__)
 
 #define _FBTweakBindWithoutRange(object_, property_, category_, collection_, name_, default_) \
 ((^{ \
-  FBTweak *__bind_tweak = _FBTweakInlineWithoutRange(category_, collection_, name_, default_); \
+  FBPersistentTweak *__bind_tweak = _FBTweakInlineWithoutRange(category_, collection_, name_, default_); \
   _FBTweakBindInternal(object_, property_, category_, collection_, name_, default_, __bind_tweak); \
 })())
 #define _FBTweakBindWithRange(object_, property_, category_, collection_, name_, default_, min_, max_) \
 ((^{ \
-  FBTweak *__bind_tweak = _FBTweakInlineWithRange(category_, collection_, name_, default_, min_, max_); \
+  FBPersistentTweak *__bind_tweak = _FBTweakInlineWithRange(category_, collection_, name_, default_, min_, max_); \
   _FBTweakBindInternal(object_, property_, category_, collection_, name_, default_, __bind_tweak); \
 })())
 #define _FBTweakBindWithPossible(object_, property_, category_, collection_, name_, default_, possible_) \
 ((^{ \
-  FBTweak *__bind_tweak = _FBTweakInlineWithPossible(category_, collection_, name_, default_, possible_); \
+  FBPersistentTweak *__bind_tweak = _FBTweakInlineWithPossible(category_, collection_, name_, default_, possible_); \
   _FBTweakBindInternal(object_, property_, category_, collection_, name_, default_, __bind_tweak); \
 })())
 #define _FBTweakBindInternal(object_, property_, category_, collection_, name_, default_, tweak_) \

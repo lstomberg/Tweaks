@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class FBTweak;
+@protocol FBTweak;
 
 /**
   @abstract Block to call when an update is observed.
@@ -29,7 +29,7 @@ typedef void (^_FBTweakBindObserverBlock)(id object);
   @param block The block to call on change.
   @return A new bind observer.
 */
-- (instancetype)initWithTweak:(FBTweak *)tweak block:(_FBTweakBindObserverBlock)block;
+- (instancetype)initWithTweak:(id<FBTweak>)tweak block:(_FBTweakBindObserverBlock)block;
 
 /**
   @abstract Attaches to an object and deallocates with it.

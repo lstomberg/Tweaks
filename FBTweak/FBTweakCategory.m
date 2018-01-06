@@ -76,9 +76,9 @@
 
 - (void)reset {
   for (FBTweakCollection *collection in self.tweakCollections) {
-    for (FBTweak *tweak in collection.tweaks) {
-      if (!tweak.isAction) {
-        tweak.currentValue = nil;
+    for (id<FBTweak> tweak in collection.tweaks) {
+      if ([tweak respondsToSelector:@selector(reset)]) {
+        [tweak reset];
       }
     }
   }
