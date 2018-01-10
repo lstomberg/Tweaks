@@ -17,12 +17,8 @@
 #import "_FBTweakArrayViewController.h"
 #import "_FBKeyboardManager.h"
 
-@interface _FBTweakCollectionViewController () <UITableViewDelegate, UITableViewDataSource>
-@end
-
 @implementation _FBTweakCollectionViewController {
-  UITableView *_tableView;
-  NSArray *_sortedCollections;
+   NSArray<FBTweakCollection *> *_sortedCollections;
   _FBKeyboardManager *_keyboardManager;
 }
 
@@ -31,38 +27,48 @@
   if ((self = [super init])) {
     _tweakCategory = category;
     self.title = _tweakCategory.name;
-    [self _reloadData];
+
+    [(id)self.tweakCategory addObserver:self forKeyPath:NSStringFromSelector(@selector(tweakCollections))
+                                options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
+                                context:nil];
+
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(_updateCategory)
+                  forControlEvents:UIControlEventValueChanged];
   }
   
   return self;
+}
+
+- (void)dealloc
+{
+  [(id)self.tweakCategory removeObserver:self
+                              forKeyPath:NSStringFromSelector(@selector(tweakCollections))];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(NSArray<FBTweakCollection *> *)tweakCollections change:(NSDictionary *)change context:(void *)context
+{
+  if (![keyPath isEqualToString:NSStringFromSelector(@selector(tweakCollections))]) {
+    return;
+  }
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self _reloadData];
+  });
 }
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
 
-  _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
-  _tableView.delegate = self;
-  _tableView.dataSource = self;
-  _tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-  [self.view addSubview:_tableView];
-  
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(_done)];
 
-  _keyboardManager = [[_FBKeyboardManager alloc] initWithViewScrollView:_tableView];
-}
-
-- (void)dealloc
-{
-  _tableView.delegate = nil;
-  _tableView.dataSource = nil;
+  _keyboardManager = [[_FBKeyboardManager alloc] initWithViewScrollView:self.tableView];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
   
-  [_tableView deselectRowAtIndexPath:_tableView.indexPathForSelectedRow animated:animated];
   [self _reloadData];
 
   [_keyboardManager enable];
@@ -74,12 +80,43 @@
   [_keyboardManager disable];
 }
 
+- (void)_updateCategory {
+  self.refreshControl.attributedTitle =
+      [[NSAttributedString alloc] initWithString:@"Refreshing..."];
+  [self.refreshControl beginRefreshing];
+  [self.tweakCategory updateWithCompletion:^(NSError * _Nullable error) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [self.refreshControl endRefreshing];
+        if (error) {
+          [self presentViewController:[self errorAlertControllerWithError:error] animated:YES
+                           completion:nil];
+        }
+      });
+    }];
+}
+
+- (UIAlertController *)errorAlertControllerWithError:(NSError * _Nonnull)error {
+  NSString *alertMessage = [NSString stringWithFormat:@"An error occured while updating: %@.",
+                            error.description];
+  UIAlertController *alertController = [UIAlertController
+                                        alertControllerWithTitle:@"Error updating catergory"
+                                        message:alertMessage
+                                        preferredStyle:UIAlertControllerStyleAlert];
+  UIAlertAction *okAction = [UIAlertAction
+                             actionWithTitle:NSLocalizedString(@"OK", @"OK action")
+                             style:UIAlertActionStyleDefault
+                             handler:^(UIAlertAction __unused *action){}];
+
+  [alertController addAction:okAction];
+  return alertController;
+}
+
 - (void)_reloadData
 {
   _sortedCollections = [_tweakCategory.tweakCollections sortedArrayUsingComparator:^(FBTweakCollection *a, FBTweakCollection *b) {
     return [a.name localizedStandardCompare:b.name];
   }];
-  [_tableView reloadData];
+  [self.tableView reloadData];
 }
 
 - (void)_done
