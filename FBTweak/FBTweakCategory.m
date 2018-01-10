@@ -7,6 +7,7 @@
  of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import "FBTweak.h"
 #import "FBTweakCategory.h"
 #import "FBTweakCollection.h"
 
@@ -18,28 +19,31 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
   NSString *name = [coder decodeObjectForKey:@"name"];
-  
-  if ((self = [self initWithName:name])) {
-    _orderedCollections = [[coder decodeObjectForKey:@"collections"] mutableCopy];
-    
-    for (FBTweakCollection *tweakCollection in _orderedCollections) {
-      [_namedCollections setObject:tweakCollection forKey:tweakCollection.name];
-    }
-  }
-  
-  return self;
+  NSArray<FBTweakCollection *> *collections = [coder decodeObjectForKey:@"collections"];
+
+  return [self initWithName:name tweakCollections:collections];
 }
 
 - (instancetype)initWithName:(NSString *)name
 {
+  return [self initWithName:name tweakCollections:@[]];
+}
+
+- (instancetype)initWithName:(NSString *)name
+            tweakCollections:(NSArray<FBTweakCollection *> *)tweakCollections {
   if ((self = [super init])) {
     _name = [name copy];
-    
-    _orderedCollections = [[NSMutableArray alloc] initWithCapacity:4];
-    _namedCollections = [[NSMutableDictionary alloc] initWithCapacity:4];
+    self.tweakCollections = tweakCollections;
   }
-  
   return self;
+}
+
+- (void)setTweakCollections:(NSArray<FBTweakCollection *> *)tweakCollections {
+  _orderedCollections = [tweakCollections mutableCopy];
+  _namedCollections = [[NSMutableDictionary alloc] initWithCapacity:4];
+  for (FBTweakCollection *tweakCollection in _orderedCollections) {
+    [_namedCollections setObject:tweakCollection forKey:tweakCollection.name];
+  }
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
@@ -68,6 +72,20 @@
 {
   [_orderedCollections removeObject:tweakCollection];
   [_namedCollections removeObjectForKey:tweakCollection.name];
+}
+
+- (void)reset {
+  for (FBTweakCollection *collection in self.tweakCollections) {
+    for (FBTweak *tweak in collection.tweaks) {
+      if (!tweak.isAction) {
+        tweak.currentValue = nil;
+      }
+    }
+  }
+}
+
+- (void)updateWithCompletion:(FBTweakCategoryUpdateBlock)completion {
+  completion(nil);
 }
 
 @end
