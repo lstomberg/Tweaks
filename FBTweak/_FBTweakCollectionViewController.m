@@ -20,7 +20,6 @@
 #import "_FBTweakTableViewCell.h"
 
 @implementation _FBTweakCollectionViewController {
-   NSArray<FBTweakCollection *> *_sortedCollections;
   _FBKeyboardManager *_keyboardManager;
 }
 
@@ -131,9 +130,6 @@
 
 - (void)_reloadData
 {
-  _sortedCollections = [_tweakCategory.tweakCollections sortedArrayUsingComparator:^(FBTweakCollection *a, FBTweakCollection *b) {
-    return [a.name localizedStandardCompare:b.name];
-  }];
   [self.tableView reloadData];
 }
 
@@ -144,24 +140,24 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-  return _sortedCollections.count;
+  return self.tweakCategory.tweakCollections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-  FBTweakCollection *collection = _sortedCollections[section];
+  FBTweakCollection *collection = self.tweakCategory.tweakCollections[section];
   return collection.tweaks.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-  FBTweakCollection *collection = _sortedCollections[section];
+  FBTweakCollection *collection = self.tweakCategory.tweakCollections[section];
   return collection.name;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  FBTweakCollection *collection = _sortedCollections[indexPath.section];
+  FBTweakCollection *collection = self.tweakCategory.tweakCollections[indexPath.section];
   id<FBTweak> tweak = collection.tweaks[indexPath.row];
 
   NSString *reusableIdentifier = NSStringFromClass([self tweakCellForTweak:tweak]);
@@ -173,7 +169,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  FBTweakCollection *collection = _sortedCollections[indexPath.section];
+  FBTweakCollection *collection = self.tweakCategory.tweakCollections[indexPath.section];
   id<FBTweak> tweak = collection.tweaks[indexPath.row];
 
   if ([tweak conformsToProtocol:@protocol(FBActionTweak)]) {
@@ -196,7 +192,7 @@
       [self.navigationController pushViewController:vc animated:YES];
     }
   } else {
-    /// Other FBTweak objects are read-only
+    // Other FBTweak objects are read-only
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
   }
 }
