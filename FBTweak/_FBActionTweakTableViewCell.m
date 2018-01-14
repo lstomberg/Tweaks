@@ -8,22 +8,19 @@
  */
 
 #import "FBTweak.h"
-#import "_FBTweakTableViewCell.h"
+#import "_FBActionTweakTableViewCell.h"
 
-@implementation _FBTweakTableViewCell
+@implementation _FBActionTweakTableViewCell
 
 @synthesize tweak = _tweak;
 
 /// Block to execute when a key path value has changed. The block provides the \c cell to update and
 /// the observed \c value that should be updated in \c cell. The block is always called on the main
 /// thread.
-typedef void (^FBTweakTableViewCellBlock)(_FBTweakTableViewCell *cell, id value);
+typedef void (^FBActionTweakTableViewCellBlock)(_FBActionTweakTableViewCell *cell, id value);
 
-+ (NSDictionary<NSString *, FBTweakTableViewCellBlock> *)keyPathMapping {
++ (NSDictionary<NSString *, FBActionTweakTableViewCellBlock> *)keyPathMapping {
   return @{
-    @"tweak.currentValue": ^(_FBTweakTableViewCell *cell, id value) {
-      cell.detailTextLabel.text = [value description];
-    },
     @"tweak.name": ^(_FBTweakTableViewCell *cell, id value) {
       if ([value isKindOfClass:[NSString class]]) {
         cell.textLabel.text = value;
@@ -35,7 +32,8 @@ typedef void (^FBTweakTableViewCellBlock)(_FBTweakTableViewCell *cell, id value)
 - (instancetype)initWithStyle:(UITableViewCellStyle)style
               reuseIdentifier:(NSString *)reuseIdentifier {
   if ((self = [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier])) {
-    self.detailTextLabel.textColor = [UIColor blackColor];
+    self.detailTextLabel.hidden = YES;
+    self.textLabel.textColor = self.tintColor;
     for (NSString *keyToObserve in [[self class] keyPathMapping]) {
       [self addObserver:self forKeyPath:keyToObserve
                 options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
@@ -54,7 +52,7 @@ typedef void (^FBTweakTableViewCellBlock)(_FBTweakTableViewCell *cell, id value)
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(_FBTweakTableViewCell *)cell
                         change:(NSDictionary *)change context:(void *)context {
-  FBTweakTableViewCellBlock _Nullable block = [[self class] keyPathMapping][keyPath];
+  FBActionTweakTableViewCellBlock _Nullable block = [[self class] keyPathMapping][keyPath];
   if (!block) {
     return;
   }

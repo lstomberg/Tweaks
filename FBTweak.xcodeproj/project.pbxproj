@@ -23,7 +23,7 @@
 		18EFE4D2189ECF2000DA6A5D /* FBTweakInlineTestsARC.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4D1189ECF2000DA6A5D /* FBTweakInlineTestsARC.m */; };
 		18EFE4D6189EEBC500DA6A5D /* _FBTweakCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4D4189EEBC500DA6A5D /* _FBTweakCategoryViewController.m */; };
 		18EFE4DA189EEED800DA6A5D /* _FBTweakCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4D8189EEED800DA6A5D /* _FBTweakCollectionViewController.m */; };
-		18EFE4DE189EF75800DA6A5D /* _FBTweakTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4DC189EF75800DA6A5D /* _FBTweakTableViewCell.m */; };
+		18EFE4DE189EF75800DA6A5D /* _FBEditableTweakTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4DC189EF75800DA6A5D /* _FBEditableTweakTableViewCell.m */; };
 		18EFE528189F19B300DA6A5D /* FBTweakCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE526189F19B300DA6A5D /* FBTweakCategory.m */; };
 		18EFE52D189F250700DA6A5D /* FBTweakInlineTestsMRR.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE52C189F250700DA6A5D /* FBTweakInlineTestsMRR.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		29E9F17B18E35C9C001EAF7D /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29E9F17A18E35C9C001EAF7D /* MessageUI.framework */; };
@@ -50,6 +50,8 @@
 		5E66FDDD1B80FA78007464F3 /* _FBColorWheelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E66FDDB1B80FA78007464F3 /* _FBColorWheelCell.m */; };
 		5EA9A2EA1911968D0071AB23 /* _FBTweakColorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EA9A2E81911968D0071AB23 /* _FBTweakColorViewController.m */; };
 		5EB0EA4018F5EFF3009481A6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EB0EA3F18F5EFF3009481A6 /* CoreGraphics.framework */; };
+		88A48053200179EC0046B7D1 /* _FBActionTweakTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A48052200179EC0046B7D1 /* _FBActionTweakTableViewCell.m */; };
+		88A48056200208180046B7D1 /* _FBTweakTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A48055200208180046B7D1 /* _FBTweakTableViewCell.m */; };
 		C15FEBB81C7F132400371B1D /* _FBTweakColorViewControllerHexDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C15FEBB71C7F132400371B1D /* _FBTweakColorViewControllerHexDataSource.m */; };
 /* End PBXBuildFile section */
 
@@ -116,8 +118,8 @@
 		18EFE4D4189EEBC500DA6A5D /* _FBTweakCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _FBTweakCategoryViewController.m; sourceTree = "<group>"; };
 		18EFE4D7189EEED800DA6A5D /* _FBTweakCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBTweakCollectionViewController.h; sourceTree = "<group>"; };
 		18EFE4D8189EEED800DA6A5D /* _FBTweakCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = _FBTweakCollectionViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		18EFE4DB189EF75800DA6A5D /* _FBTweakTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBTweakTableViewCell.h; sourceTree = "<group>"; };
-		18EFE4DC189EF75800DA6A5D /* _FBTweakTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _FBTweakTableViewCell.m; sourceTree = "<group>"; };
+		18EFE4DB189EF75800DA6A5D /* _FBEditableTweakTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBEditableTweakTableViewCell.h; sourceTree = "<group>"; };
+		18EFE4DC189EF75800DA6A5D /* _FBEditableTweakTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _FBEditableTweakTableViewCell.m; sourceTree = "<group>"; };
 		18EFE525189F19B300DA6A5D /* FBTweakCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakCategory.h; sourceTree = "<group>"; };
 		18EFE526189F19B300DA6A5D /* FBTweakCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakCategory.m; sourceTree = "<group>"; };
 		18EFE52C189F250700DA6A5D /* FBTweakInlineTestsMRR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakInlineTestsMRR.m; sourceTree = "<group>"; };
@@ -145,6 +147,10 @@
 		5EA9A2E71911968D0071AB23 /* _FBTweakColorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBTweakColorViewController.h; sourceTree = "<group>"; };
 		5EA9A2E81911968D0071AB23 /* _FBTweakColorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = _FBTweakColorViewController.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		5EB0EA3F18F5EFF3009481A6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		88A48051200179EC0046B7D1 /* _FBActionTweakTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _FBActionTweakTableViewCell.h; sourceTree = "<group>"; };
+		88A48052200179EC0046B7D1 /* _FBActionTweakTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _FBActionTweakTableViewCell.m; sourceTree = "<group>"; };
+		88A48054200208180046B7D1 /* _FBTweakTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _FBTweakTableViewCell.h; sourceTree = "<group>"; };
+		88A48055200208180046B7D1 /* _FBTweakTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _FBTweakTableViewCell.m; sourceTree = "<group>"; };
 		C15FEBB61C7F132400371B1D /* _FBTweakColorViewControllerHexDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBTweakColorViewControllerHexDataSource.h; sourceTree = "<group>"; };
 		C15FEBB71C7F132400371B1D /* _FBTweakColorViewControllerHexDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = _FBTweakColorViewControllerHexDataSource.m; sourceTree = "<group>"; tabWidth = 2; };
 /* End PBXFileReference section */
@@ -267,12 +273,16 @@
 				18EFE4AD189EBABA00DA6A5D /* FBTweakShakeWindow.m */,
 				18EFE4A4189EBA9E00DA6A5D /* FBTweakViewController.h */,
 				18EFE4A5189EBA9E00DA6A5D /* FBTweakViewController.m */,
+				88A48051200179EC0046B7D1 /* _FBActionTweakTableViewCell.h */,
+				88A48052200179EC0046B7D1 /* _FBActionTweakTableViewCell.m */,
+				18EFE4DB189EF75800DA6A5D /* _FBEditableTweakTableViewCell.h */,
+				18EFE4DC189EF75800DA6A5D /* _FBEditableTweakTableViewCell.m */,
+				88A48054200208180046B7D1 /* _FBTweakTableViewCell.h */,
+				88A48055200208180046B7D1 /* _FBTweakTableViewCell.m */,
 				18EFE4D3189EEBC500DA6A5D /* _FBTweakCategoryViewController.h */,
 				18EFE4D4189EEBC500DA6A5D /* _FBTweakCategoryViewController.m */,
 				18EFE4D7189EEED800DA6A5D /* _FBTweakCollectionViewController.h */,
 				18EFE4D8189EEED800DA6A5D /* _FBTweakCollectionViewController.m */,
-				18EFE4DB189EF75800DA6A5D /* _FBTweakTableViewCell.h */,
-				18EFE4DC189EF75800DA6A5D /* _FBTweakTableViewCell.m */,
 				5BE25A501A0AA9D500C97C3E /* _FBTweakDictionaryViewController.h */,
 				5BE25A511A0AA9D500C97C3E /* _FBTweakDictionaryViewController.m */,
 				5BACB31C1A12813C00C4F79D /* _FBTweakArrayViewController.h */,
@@ -409,17 +419,19 @@
 				5E66FDD91B80ECDA007464F3 /* _FBTweakColorViewControllerHSBDataSource.m in Sources */,
 				18EFE4AB189EBAAD00DA6A5D /* FBTweakInline.m in Sources */,
 				18EFE4B8189EBC3100DA6A5D /* FBTweak.m in Sources */,
-				18EFE4DE189EF75800DA6A5D /* _FBTweakTableViewCell.m in Sources */,
+				18EFE4DE189EF75800DA6A5D /* _FBEditableTweakTableViewCell.m in Sources */,
 				18EFE528189F19B300DA6A5D /* FBTweakCategory.m in Sources */,
 				5E1F48EC1901E4D500D7C4A2 /* _FBColorUtils.m in Sources */,
 				5E1708DE190B147000402135 /* _FBKeyboardManager.m in Sources */,
 				5E66FDDD1B80FA78007464F3 /* _FBColorWheelCell.m in Sources */,
 				18EFE4D6189EEBC500DA6A5D /* _FBTweakCategoryViewController.m in Sources */,
 				18EFE4AF189EBABA00DA6A5D /* FBTweakShakeWindow.m in Sources */,
+				88A48056200208180046B7D1 /* _FBTweakTableViewCell.m in Sources */,
 				5E66FDCE1B80C309007464F3 /* _FBColorComponentCell.m in Sources */,
 				5BACB31F1A12813C00C4F79D /* _FBTweakArrayViewController.m in Sources */,
 				18EFE4DA189EEED800DA6A5D /* _FBTweakCollectionViewController.m in Sources */,
 				5EA9A2EA1911968D0071AB23 /* _FBTweakColorViewController.m in Sources */,
+				88A48053200179EC0046B7D1 /* _FBActionTweakTableViewCell.m in Sources */,
 				5E66FDD31B80E4C1007464F3 /* _FBTweakColorViewControllerRGBDataSource.m in Sources */,
 				184A94F118D26871005F2774 /* _FBTweakBindObserver.m in Sources */,
 			);
