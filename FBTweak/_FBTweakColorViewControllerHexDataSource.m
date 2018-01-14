@@ -8,13 +8,15 @@
  */
 
 #import "_FBTweakColorViewControllerHexDataSource.h"
-#import "_FBTweakTableViewCell.h"
+#import "_FBEditableTweakTableViewCell.h"
 #import "FBTweak.h"
 
-@interface _FBTweakColorViewControllerHexDataSource () <FBTweakObserver>
+static NSString * const kFBTweakCurrentValueKeyPath = @"tweak.currentValue";
+
+@interface _FBTweakColorViewControllerHexDataSource ()
 
 @property (nonatomic, strong) UIColor *color;
-@property (nonatomic, strong) FBTweak *tweak;
+@property (nonatomic, strong) id<FBEditableTweak> tweak;
 
 @end
 
@@ -26,13 +28,16 @@
 {
   if (self = [super init]) {
     _colorSampleCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    [self addObserver:self forKeyPath:kFBTweakCurrentValueKeyPath
+              options:NSKeyValueObservingOptionNew context:nil];
+
   }
   return self;
 }
 
 - (void)dealloc
 {
-  [self.tweak removeObserver:self];
+  [self removeObserver:self forKeyPath:kFBTweakCurrentValueKeyPath];
 }
 
 - (UIColor *)value
@@ -70,21 +75,26 @@
  *  By using _FBTweakTableViewCell, it allows us to internally observe changes and configure the tableViewCell without
  *  having to create a new subclass. So while not a tweak in itself, it provides us the desired behaviour.
  */
-- (_FBTweakTableViewCell *)hexCell
+- (_FBEditableTweakTableViewCell *)hexCell
 {
-  _FBTweakTableViewCell *hexCell = [[_FBTweakTableViewCell alloc] initWithReuseIdentifier:@"hexCell"];
-  self.tweak = [[FBTweak alloc] initWithIdentifier:@"hex"];
-  self.tweak.name = @"Hex Value";
-  self.tweak.defaultValue = @"FFFFFF";
-  self.tweak.currentValue = [self.class colorToHexString:self.color];
-  [self.tweak addObserver:self];
+  _FBEditableTweakTableViewCell *hexCell = [[_FBEditableTweakTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1
+                                                                                reuseIdentifier:@"hexCell"];
+  id<FBEditableTweak> tweak = [[FBMutableTweak alloc] initWithIdentifier:@"hex" name:@"Hex Value"
+                                                            defaultValue:@"FFFFFF"];
+  tweak.currentValue = [self.class colorToHexString:self.color];
+  self.tweak = tweak;
   hexCell.tweak = self.tweak;
   return hexCell;
 }
 
-- (void)tweakDidChange:(FBTweak *)tweak
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(_FBTweakTableViewCell *)cell
+                        change:(NSDictionary *)change context:(void *)context
 {
-  UIColor *colorFromHex = [self.class colorFromHexString:tweak.currentValue];
+  if (![keyPath isEqualToString:kFBTweakCurrentValueKeyPath]) {
+    return;
+  }
+
+  UIColor *colorFromHex = [self.class colorFromHexString:self.tweak.currentValue];
   [self setValue:colorFromHex];
   _colorSampleCell.backgroundColor = colorFromHex;
 }
@@ -112,8 +122,8 @@
   [scanner setScanLocation:1]; // bypass '#' character
   [scanner scanHexInt:&rgbValue];
   CGFloat redComponent = ((rgbValue & 0xFF0000) >> 16) / 255.0;
-  CGFloat blueComponent = ((rgbValue & 0xFF00) >> 8) / 255.0;
-  CGFloat greenComponent = (rgbValue & 0xFF) / 255.0;
+  CGFloat greenComponent = ((rgbValue & 0xFF00) >> 8) / 255.0;
+  CGFloat blueComponent = (rgbValue & 0xFF) / 255.0;
   return [UIColor colorWithRed:redComponent green:greenComponent blue:blueComponent alpha:1.0];
 }
 
