@@ -7,23 +7,23 @@
  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import "_FBTweakDictionaryViewController.h"
+#import "_FBEditableTweakDictionaryViewController.h"
 #import "FBTweak.h"
 
-@interface _FBTweakDictionaryViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface _FBEditableTweakDictionaryViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @end
 
-@implementation _FBTweakDictionaryViewController {
+@implementation _FBEditableTweakDictionaryViewController {
   UITableView *_tableView;
 }
 
-- (instancetype)initWithTweak:(FBTweak *)tweak
+- (instancetype)initWithEditableTweak:(id<FBEditableTweak>)tweak
 {
   NSParameterAssert(tweak != nil);
   NSParameterAssert([tweak.possibleValues isKindOfClass:[NSDictionary class]]);
 
-  if ((self = [super init])) {
+  if ((self = [super initWithNibName:nil bundle:nil])) {
     _tweak = tweak;
     self.title = _tweak.name;
   }

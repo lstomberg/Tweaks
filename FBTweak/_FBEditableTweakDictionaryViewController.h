@@ -9,24 +9,30 @@
 
 #import <UIKit/UIKit.h>
 
-@class FBTweak;
+@protocol FBEditableTweak;
 
 /**
   @abstract Displays list of keys in a dictionary tweak.
  */
-@interface _FBTweakDictionaryViewController : UIViewController
+@interface _FBEditableTweakDictionaryViewController : UIViewController
+
+- (instancetype)init NS_UNAVAILABLE;
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil
+                         bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
 /**
   @abstract Creates a tweak dictionary view controller.
-  @discussion This is the designated initializer.
   @param tweak The tweak the view controller is for. Must
     not be nil, and must have a dictionary of possibleValues.
  */
-- (instancetype)initWithTweak:(FBTweak *)tweak;
+- (instancetype)initWithEditableTweak:(id<FBEditableTweak>)tweak NS_DESIGNATED_INITIALIZER;
 
 /**
   @abstract The dictionary tweak to display in the view controller.
  */
-@property (nonatomic, strong, readonly) FBTweak *tweak;
+@property (nonatomic, strong, readonly) id<FBEditableTweak>tweak;
 
 @end

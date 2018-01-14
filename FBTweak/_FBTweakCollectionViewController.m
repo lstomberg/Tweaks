@@ -7,15 +7,17 @@
  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import "FBTweakCollection.h"
-#import "FBTweakCategory.h"
 #import "FBTweak.h"
+#import "FBTweakCategory.h"
+#import "FBTweakCollection.h"
+#import "_FBActionTweakTableViewCell.h"
+#import "_FBEditableTweakArrayViewController.h"
+#import "_FBEditableTweakColorViewController.h"
+#import "_FBEditableTweakDictionaryViewController.h"
+#import "_FBEditableTweakTableViewCell.h"
+#import "_FBKeyboardManager.h"
 #import "_FBTweakCollectionViewController.h"
 #import "_FBTweakTableViewCell.h"
-#import "_FBTweakColorViewController.h"
-#import "_FBTweakDictionaryViewController.h"
-#import "_FBTweakArrayViewController.h"
-#import "_FBKeyboardManager.h"
 
 @implementation _FBTweakCollectionViewController {
    NSArray<FBTweakCollection *> *_sortedCollections;
@@ -35,9 +37,25 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(_updateCategory)
                   forControlEvents:UIControlEventValueChanged];
+
+    [self.tableView registerClass:[_FBEditableTweakTableViewCell class]
+           forCellReuseIdentifier:NSStringFromClass([_FBEditableTweakTableViewCell class])];
+    [self.tableView registerClass:[_FBActionTweakTableViewCell class]
+           forCellReuseIdentifier:NSStringFromClass([_FBActionTweakTableViewCell class])];
+    [self.tableView registerClass:[_FBTweakTableViewCell class]
+           forCellReuseIdentifier:NSStringFromClass([_FBTweakTableViewCell class])];
   }
   
   return self;
+}
+
+- (Class)tweakCellForTweak:(id<FBTweak>)tweak {
+  if ([tweak conformsToProtocol:@protocol(FBActionTweak)]) {
+    return [_FBActionTweakTableViewCell class];
+  } else if ([tweak conformsToProtocol:@protocol(FBEditableTweak)]) {
+    return [_FBEditableTweakTableViewCell class];
+  }
+  return [_FBTweakTableViewCell class];
 }
 
 - (void)dealloc
@@ -143,37 +161,42 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  static NSString *_FBTweakCollectionViewControllerCellIdentifier = @"_FBTweakCollectionViewControllerCellIdentifier";
-  _FBTweakTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:_FBTweakCollectionViewControllerCellIdentifier];
-  if (cell == nil) {
-    cell = [[_FBTweakTableViewCell alloc] initWithReuseIdentifier:_FBTweakCollectionViewControllerCellIdentifier];
-  }
-  
   FBTweakCollection *collection = _sortedCollections[indexPath.section];
-  FBTweak *tweak = collection.tweaks[indexPath.row];
+  id<FBTweak> tweak = collection.tweaks[indexPath.row];
+
+  NSString *reusableIdentifier = NSStringFromClass([self tweakCellForTweak:tweak]);
+  UITableViewCell<_FBTweakContainer> *cell = [tableView dequeueReusableCellWithIdentifier:reusableIdentifier];
   cell.tweak = tweak;
-  
+
   return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
   FBTweakCollection *collection = _sortedCollections[indexPath.section];
-  FBTweak *tweak = collection.tweaks[indexPath.row];
-  if ([tweak.possibleValues isKindOfClass:[NSDictionary class]]) {
-    _FBTweakDictionaryViewController *vc = [[_FBTweakDictionaryViewController alloc] initWithTweak:tweak];
-    [self.navigationController pushViewController:vc animated:YES];
-  } else if ([tweak.possibleValues isKindOfClass:[NSArray class]]) {
-    _FBTweakArrayViewController *vc = [[_FBTweakArrayViewController alloc] initWithTweak:tweak];
-    [self.navigationController pushViewController:vc animated:YES];
-  } else if ([tweak.defaultValue isKindOfClass:[UIColor class]]) {
-    _FBTweakColorViewController *vc = [[_FBTweakColorViewController alloc] initWithTweak:tweak];
-    [self.navigationController pushViewController:vc animated:YES];
-  } else if (tweak.isAction) {
-    dispatch_block_t block = tweak.defaultValue;
+  id<FBTweak> tweak = collection.tweaks[indexPath.row];
+
+  if ([tweak conformsToProtocol:@protocol(FBActionTweak)]) {
+    FBActionTweak *actionTweak = (FBActionTweak *)tweak;
+    dispatch_block_t _Nullable block = actionTweak.currentValue;
     if (block != NULL) {
-        block();
+      block();
     }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+  } else if ([tweak conformsToProtocol:@protocol(FBEditableTweak)]) {
+    id<FBEditableTweak> editableTweak = (id<FBEditableTweak>)tweak;
+    if ([editableTweak.possibleValues isKindOfClass:[NSDictionary class]]) {
+      _FBEditableTweakDictionaryViewController *vc = [[_FBEditableTweakDictionaryViewController alloc] initWithEditableTweak:editableTweak];
+      [self.navigationController pushViewController:vc animated:YES];
+    } else if ([editableTweak.possibleValues isKindOfClass:[NSArray class]]) {
+      _FBEditableTweakArrayViewController *vc = [[_FBEditableTweakArrayViewController alloc] initWithEditableTweak:editableTweak];
+      [self.navigationController pushViewController:vc animated:YES];
+    } else if ([editableTweak.defaultValue isKindOfClass:[UIColor class]]) {
+      _FBEditableTweakColorViewController *vc = [[_FBEditableTweakColorViewController alloc] initWithEditableTweak:editableTweak];
+      [self.navigationController pushViewController:vc animated:YES];
+    }
+  } else {
+    /// Other FBTweak objects are read-only
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
   }
 }
