@@ -25,7 +25,6 @@
 		18EFE4DA189EEED800DA6A5D /* _FBTweakCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4D8189EEED800DA6A5D /* _FBTweakCollectionViewController.m */; };
 		18EFE4DE189EF75800DA6A5D /* _FBEditableTweakTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4DC189EF75800DA6A5D /* _FBEditableTweakTableViewCell.m */; };
 		18EFE528189F19B300DA6A5D /* FBTweakCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE526189F19B300DA6A5D /* FBTweakCategory.m */; };
-		18EFE52D189F250700DA6A5D /* FBTweakInlineTestsMRR.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE52C189F250700DA6A5D /* FBTweakInlineTestsMRR.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		29E9F17B18E35C9C001EAF7D /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29E9F17A18E35C9C001EAF7D /* MessageUI.framework */; };
 		4F930D6C1C4C73F8007DC0E1 /* FBTweakEnabled.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 18EFE535189F38D500DA6A5D /* FBTweakEnabled.h */; };
 		4F930D6D1C4C7406007DC0E1 /* FBTweakInlineInternal.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 18EFE4CF189EC70300DA6A5D /* FBTweakInlineInternal.h */; };
@@ -122,7 +121,6 @@
 		18EFE4DC189EF75800DA6A5D /* _FBEditableTweakTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _FBEditableTweakTableViewCell.m; sourceTree = "<group>"; };
 		18EFE525189F19B300DA6A5D /* FBTweakCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakCategory.h; sourceTree = "<group>"; };
 		18EFE526189F19B300DA6A5D /* FBTweakCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakCategory.m; sourceTree = "<group>"; };
-		18EFE52C189F250700DA6A5D /* FBTweakInlineTestsMRR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakInlineTestsMRR.m; sourceTree = "<group>"; };
 		18EFE535189F38D500DA6A5D /* FBTweakEnabled.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakEnabled.h; sourceTree = "<group>"; };
 		29E9F17A18E35C9C001EAF7D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		5BACB31C1A12813C00C4F79D /* _FBEditableTweakArrayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBEditableTweakArrayViewController.h; sourceTree = "<group>"; };
@@ -236,7 +234,6 @@
 			isa = PBXGroup;
 			children = (
 				18EFE4D1189ECF2000DA6A5D /* FBTweakInlineTestsARC.m */,
-				18EFE52C189F250700DA6A5D /* FBTweakInlineTestsMRR.m */,
 				18EFE488189EBA4900DA6A5D /* Supporting Files */,
 			);
 			path = FBTweakTests;
@@ -441,7 +438,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18EFE52D189F250700DA6A5D /* FBTweakInlineTestsMRR.m in Sources */,
 				5E1F48ED1901E80800D7C4A2 /* _FBColorUtils.m in Sources */,
 				18EFE4D2189ECF2000DA6A5D /* FBTweakInlineTestsARC.m in Sources */,
 			);
