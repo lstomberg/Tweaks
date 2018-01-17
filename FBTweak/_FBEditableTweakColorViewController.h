@@ -9,21 +9,27 @@
 
 #import <UIKit/UIKit.h>
 
-@class FBTweak;
+@protocol FBEditableTweak;
 
 /**
   @abstract Displays a view to edit a tweak with color value.
  */
-@interface _FBTweakColorViewController : UIViewController
+@interface _FBEditableTweakColorViewController : UIViewController
+
+- (instancetype)init NS_UNAVAILABLE;
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil
+                         bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
 /**
   @abstract Create a RGB view controller.
   @param tweak The tweak with color value to edit.
-  @discussion This is the designated initializer.
  */
-- (instancetype)initWithTweak:(FBTweak *)tweak;
+- (instancetype)initWithEditableTweak:(id<FBEditableTweak>)tweak NS_DESIGNATED_INITIALIZER;
 
 //! @abstract The color tweak to display in the view controller.
-@property (nonatomic, strong, readonly) FBTweak *tweak;
+@property (nonatomic, strong, readonly) id<FBEditableTweak>tweak;
 
 @end

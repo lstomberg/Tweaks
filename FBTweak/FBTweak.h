@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol FBTweakObserver;
+NS_ASSUME_NONNULL_BEGIN
 
 /**
   @abstract Represents a possible value of a tweak.
@@ -37,132 +37,169 @@ typedef id FBTweakValue;
   @abstract The minimum value of the range.
   @discussion Will always have a value.
  */
-@property (nonatomic, strong, readwrite) FBTweakValue minimumValue;
+@property (readwrite, nonatomic) FBTweakValue minimumValue;
 
 /**
   @abstract The maximum value of the range.
   @discussion Will always have a value.
  */
-@property (nonatomic, strong, readwrite) FBTweakValue maximumValue;
+@property (readwrite, nonatomic) FBTweakValue maximumValue;
 
 @end
 
 /**
-  @abstract Represents a unique, named tweak.
-  @discussion A tweak contains a persistent, editable value.
+ @abstract Represents a single value that can be updated, and monitored using KVO.
  */
-@interface FBTweak : NSObject <NSCoding>
+@protocol FBTweak <NSObject>
 
 /**
-  @abstract Creates a new tweak model.
-  @discussion This is the designated initializer.
-  @param identifier The identifier for the tweak. Required.
- */
-- (instancetype)initWithIdentifier:(NSString *)identifier;
-
-/**
-  @abstract This tweak's unique identifier.
-  @discussion Used when reading and writing the tweak's value.
+ @abstract This tweak's unique identifier.
  */
 @property (nonatomic, copy, readonly) NSString *identifier;
 
 /**
-  @abstract The human-readable name of the tweak.
-  @discussion Show the name when displaying the tweak.
+ @abstract The human-readable name of the tweak.
  */
-@property (nonatomic, copy, readwrite) NSString *name;
+@property (nonatomic, copy, readonly) NSString *name;
 
 /**
-  @abstract If this tweak is an action, with a block value.
-  @param If YES, {@ref currentValue} should not be set and
-    {@ref defaultValue} is a block rather than a value object.
+ @abstract The current value of the tweak. KVO-compliant.
  */
-@property (nonatomic, readonly, assign, getter = isAction) BOOL action;
-
-/**
-  @abstract The default value of the tweak.
-  @discussion Use this when the current value is unset.
-    For actions, set this property to a block instead.
- */
-@property (nonatomic, strong, readwrite) FBTweakValue defaultValue;
-
-/**
-  @abstract The current value of the tweak. Can be nil.
-  @discussion Changes will be propagated to disk. Enforces within
-    possible values when changed. Must not be set on actions.
- */
-@property (nonatomic, strong, readwrite) FBTweakValue currentValue;
-
-/**
-  @abstract The possible values of the tweak.
-  @discussion Optional. If nil, any value is allowed. If an
-    FBTweakNumericRange, represents a range of numeric values.
-    If an array or dictionary, contains all of the allowed values.
-    Should not be set on tweaks representing actions.
- */
-@property (nonatomic, strong, readwrite) id possibleValues;
-
-/**
-  @abstract The minimum value of the tweak.
-  @discussion Optional. If nil, there is no minimum. Numeric only.
-    Should not be set on tweaks representing actions.
- */
-@property (nonatomic, strong, readwrite) FBTweakValue minimumValue;
-
-/**
-  @abstract The maximum value of the tweak.
-  @discussion Optional. If nil, there is no maximum. Numeric only.
-    Should not be set on tweaks representing actions.
- */
-@property (nonatomic, strong, readwrite) FBTweakValue maximumValue;
-
-/**
-  @abstract The step value of the tweak.
-  @discussion Optional. If nil, the step value is calculated from
-    the miniumum and maxium values. Only used for numeric tweaks.
- */
-@property (nonatomic, strong, readwrite) FBTweakValue stepValue;
-
-/**
-  @abstract The decimal precision value of the tweak.
-  @discussion Optional. If nil, the precision value is calculated from
-    the step value. Only used for numeric tweaks.
- */
-@property (nonatomic, strong, readwrite) FBTweakValue precisionValue;
-
-/**
-  @abstract Adds an observer to the tweak.
-  @param observer The observer. Must not be nil.
-  @discussion A weak reference is taken on the observer.
- */
-- (void)addObserver:(id<FBTweakObserver>)observer;
-
-/**
-  @abstract Removes an observer from the tweak.
-  @param observer The observer to remove. Must not be nil.
-  @discussion Optional, removing an observer isn't required.
- */
-- (void)removeObserver:(id<FBTweakObserver>)observer;
-
-@end
-
-/**
-  @abstract Responds to updates when a tweak changes.
- */
-@protocol FBTweakObserver <NSObject>
-
-/**
-  @abstract Called when a tweak's value changes.
-  @param tweak The tweak which changed in value.
- */
-- (void)tweakDidChange:(FBTweak *)tweak;
+@property (readonly ,nonatomic, nullable) FBTweakValue currentValue;
 
 @optional
 
 /**
- @abstract Called when a tweak's value will change.
- @param tweak The tweak which value will change.
+ @abstract Reset the tweak to its initial state.
  */
-- (void)tweakWillChange:(FBTweak *)tweak;
+- (void)reset;
 
 @end
+
+/**
+ @abstract A tweak that contains a block as its \c currentValue.
+ */
+@protocol FBActionTweak <FBTweak>
+
+/**
+ @abstract The underlying block for this tweak.
+ */
+@property (readonly ,nonatomic) dispatch_block_t currentValue;
+
+@end
+
+/**
+ @abstract Represent an editable \c FBTweak, whose \c currentValue can be set.
+ */
+@protocol FBEditableTweak <FBTweak>
+
+/**
+ @abstract Reset the tweak to its initial state.
+ */
+- (void)reset;
+
+/**
+ @abstract The current value of the tweak.
+ */
+@property (readwrite, nonatomic, nullable) FBTweakValue currentValue;
+
+/**
+ @abstract The default value of the tweak. It is up to the user whether to use this value when the
+ \c currentValue is \c nil.
+ */
+@property (readonly ,nonatomic) FBTweakValue defaultValue;
+
+/**
+ @abstract The possible values of the tweak.
+ @discussion If \c nil, any value is allowed. If an FBTweakNumericRange, represents a range of
+ numeric values. If \c NSSArray contains all of the allowed values. If \c NSDictionary, the keys are
+ the allowed values for \c currentValues, and the values are the display name for each allowed
+ value.
+ */
+@property (readwrite, nonatomic, nullable) id possibleValues;
+
+/**
+ @abstract The minimum value of the tweak.
+ @discussion If \c nil, there is no minimum. Applicable when \c currentValue contains only numeric
+ values.
+ */
+@property (readwrite, nonatomic, nullable) FBTweakValue minimumValue;
+
+/**
+ @abstract The maximum value of the tweak.
+ @discussion If \c nil, there is no maximum. Applicable when \c currentValue contains only numeric
+ values.
+ */
+@property (readwrite, nonatomic, nullable) FBTweakValue maximumValue;
+
+/**
+ @abstract The step value of the tweak.
+ @discussion If \c nil, a default value will be used. Applicable when \c currentValue contains only
+ numeric values.
+ */
+@property (readwrite, nonatomic, nullable) FBTweakValue stepValue;
+
+/**
+ @abstract The decimal precision value of the tweak.
+ @discussion If \c nil, a default value will be used. Applicable when \c currentValue contains only
+ numeric values.
+ */
+@property (readwrite, nonatomic, nullable) FBTweakValue precisionValue;
+
+@end
+
+/**
+ @abstract An immutable tweak.
+ */
+@interface FBTweak : NSObject <FBTweak>
+
+- (instancetype)init NS_UNAVAILABLE;
+
+/**
+ @abstract Initializes with the given \c name, \c identifier and \c currentValue.
+ */
+- (instancetype)initWithIdentifier:(NSString *)identifier name:(NSString *)name
+                      currentValue:(FBTweakValue)currentValue NS_DESIGNATED_INITIALIZER;
+
+@end
+
+/**
+ @abstract A tweak with an underlying block.
+ */
+@interface FBActionTweak : NSObject <FBActionTweak>
+
+- (instancetype)init NS_UNAVAILABLE;
+
+/**
+ @abstract Initializes with \c identifier, \c name and \c block as the underlying block.
+ The \c currentValue property of the tweak is set to be the \c block.
+ */
+- (instancetype)initWithIdentifier:(NSString *)identifier name:(NSString *)name
+                             block:(dispatch_block_t)block NS_DESIGNATED_INITIALIZER;
+
+@end
+
+/**
+  @abstract The default implementation for \c FBEditableTweak.
+ */
+@interface FBMutableTweak : NSObject <FBEditableTweak>
+
+- (instancetype)init NS_UNAVAILABLE;
+
+/**
+ @abstract Initializes with the given \c name, \c identifier and \c defaultValue.
+ */
+- (instancetype)initWithIdentifier:(NSString *)identifier name:(NSString *)name
+                      defaultValue:(FBTweakValue)defaultValue NS_DESIGNATED_INITIALIZER;
+
+@end
+
+/**
+ @abstract Mutable tweak which persistently stores its \c currentValue whenever it changes.
+ Upon initialization, the current value is reloaded from the persistent storage, using the
+ \c identifier as the key.
+ */
+@interface FBPersistentTweak : FBMutableTweak
+@end
+
+NS_ASSUME_NONNULL_END

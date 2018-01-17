@@ -12,16 +12,15 @@
 #import "FBTweak.h"
 #import "_FBTweakBindObserver.h"
 
-@interface _FBTweakBindObserver () <FBTweakObserver>
-@end
+static NSString * const kFBTweakCurrentValueKeyPath = @"tweak.currentValue";
 
 @implementation _FBTweakBindObserver {
-  FBTweak *_tweak;
+  id<FBTweak> _tweak;
   _FBTweakBindObserverBlock _block;
   __weak id _object;
 }
 
-- (instancetype)initWithTweak:(FBTweak *)tweak block:(_FBTweakBindObserverBlock)block
+- (instancetype)initWithTweak:(id<FBTweak>)tweak block:(_FBTweakBindObserverBlock)block
 {
   if ((self = [super init])) {
     NSAssert(tweak != nil, @"tweak is required");
@@ -30,16 +29,27 @@
     _tweak = tweak;
     _block = block;
     
-    [tweak addObserver:self];
+    [self addObserver:self forKeyPath:kFBTweakCurrentValueKeyPath
+              options:NSKeyValueObservingOptionNew context:nil];
   }
   
   return self;
 }
 
-- (void)tweakDidChange:(FBTweak *)tweak
+- (void)dealloc
 {
+  [self removeObserver:self forKeyPath:kFBTweakCurrentValueKeyPath];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(_FBTweakBindObserver *)cell
+                        change:(NSDictionary *)change context:(void *)context
+{
+  if (![keyPath isEqualToString:kFBTweakCurrentValueKeyPath]) {
+    return;
+  }
+
   __attribute__((objc_precise_lifetime)) id strongObject = _object;
-  
+
   if (strongObject != nil) {
     _block(strongObject);
   }

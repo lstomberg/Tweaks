@@ -41,72 +41,61 @@
 
 @end
 
-@implementation FBTweak {
-  NSHashTable *_observers;
-}
+@implementation FBTweak
 
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
-  NSString *identifier = [coder decodeObjectForKey:@"identifier"];
-  
-  if ((self = [self initWithIdentifier:identifier])) {
-    _name = [coder decodeObjectForKey:@"name"];
-    _defaultValue = [coder decodeObjectForKey:@"defaultValue"];
+@synthesize name = _name;
+@synthesize identifier = _identifier;
+@synthesize currentValue = _currentValue;
 
-    if ([coder containsValueForKey:@"possibleValues"]) {
-      _possibleValues = [coder decodeObjectForKey:@"possibleValues"];
-    } else {
-      // Backwards compatbility for before possibleValues was introduced.
-      FBTweakValue minimumValue = [coder decodeObjectForKey:@"minimumValue"];
-      FBTweakValue maximumValue = [coder decodeObjectForKey:@"maximumValue"];
-      _possibleValues = [[FBTweakNumericRange alloc] initWithMinimumValue:minimumValue maximumValue:maximumValue];
-    }
-
-    _precisionValue = [coder decodeObjectForKey:@"precisionValue"];
-    _stepValue = [coder decodeObjectForKey:@"stepValue"];
-    
-    // Fall back to the user-defaults loaded value if current value isn't set.
-    _currentValue = [coder decodeObjectForKey:@"currentValue"] ?: _currentValue;
-  }
-  
-  return self;
-}
-
-- (instancetype)initWithIdentifier:(NSString *)identifier
-{
-  if ((self = [super init])) {
+- (instancetype)initWithIdentifier:(NSString *)identifier name:(NSString *)name
+                      currentValue:(FBTweakValue)currentValue {
+  if (self = [super init]) {
     _identifier = identifier;
-    NSData *archivedValue = [[NSUserDefaults standardUserDefaults] objectForKey:_identifier];
-    _currentValue = (archivedValue != nil && [archivedValue isKindOfClass:[NSData class]] ? [NSKeyedUnarchiver unarchiveObjectWithData:archivedValue] : archivedValue);
+    _name = name;
+    _currentValue = currentValue;
   }
-  
   return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)coder
-{
-  [coder encodeObject:_identifier forKey:@"identifier"];
-  [coder encodeObject:_name forKey:@"name"];
-  
-  if (!self.isAction) {
-    [coder encodeObject:_defaultValue forKey:@"defaultValue"];
-    [coder encodeObject:_possibleValues forKey:@"possibleValues"];
-    [coder encodeObject:_currentValue forKey:@"currentValue"];
-    [coder encodeObject:_precisionValue forKey:@"precisionValue"];
-    [coder encodeObject:_stepValue forKey:@"stepValue"];
+@end
+
+@implementation FBActionTweak
+
+@synthesize name = _name;
+@synthesize identifier = _identifier;
+@synthesize currentValue = _currentValue;
+
+- (instancetype)initWithIdentifier:(NSString *)identifier name:(NSString *)name
+                             block:(dispatch_block_t)block {
+  if (self = [super init]) {
+    _identifier = identifier;
+    _name = name;
+    _currentValue = block;
   }
+  return self;
 }
 
-- (BOOL)isAction
-{
-  // NSBlock isn't a public class, walk the hierarchy for it.
-  Class blockClass = [^{} class];
+@end
 
-  while ([blockClass superclass] != [NSObject class]) {
-    blockClass = [blockClass superclass];
+@implementation FBMutableTweak
+
+@synthesize name = _name;
+@synthesize identifier = _identifier;
+@synthesize currentValue = _currentValue;
+@synthesize defaultValue = _defaultValue;
+@synthesize possibleValues = _possibleValues;
+@synthesize precisionValue = _precisionValue;
+@synthesize stepValue = _stepValue;
+
+- (instancetype)initWithIdentifier:(NSString *)identifier name:(NSString *)name
+                      defaultValue:(FBTweakValue)defaultValue {
+  if (self = [super init]) {
+    _identifier = identifier;
+    _name = name;
+    _defaultValue = defaultValue;
   }
 
-  return [_defaultValue isKindOfClass:blockClass];
+  return self;
 }
 
 - (FBTweakValue)minimumValue
@@ -151,16 +140,14 @@
 
 - (void)setCurrentValue:(FBTweakValue)currentValue
 {
-  NSAssert(!self.isAction, @"actions cannot have non-default values");
-
   if (_possibleValues != nil && currentValue != nil) {
     if ([_possibleValues isKindOfClass:[NSArray class]]) {
       if ([_possibleValues indexOfObject:currentValue] == NSNotFound) {
-        currentValue = _defaultValue;
+        currentValue = self.defaultValue;
       }
     } else if ([_possibleValues isKindOfClass:[NSDictionary class]]) {
       if ([[_possibleValues allKeys] indexOfObject:currentValue] == NSNotFound) {
-        currentValue = _defaultValue;
+        currentValue = self.defaultValue;
       }
     } else {
       FBTweakValue minimumValue = self.minimumValue;
@@ -176,37 +163,33 @@
   }
 
   if (_currentValue != currentValue) {
-      
-    for (id<FBTweakObserver> observer in [_observers setRepresentation]) {
-      if ([observer respondsToSelector:@selector(tweakWillChange:)]) {
-        [observer tweakWillChange:self];
-      }
-    }
-      
     _currentValue = currentValue;
-    // we can't store UIColor to the plist file. That is why we archive value to the NSData.
-    [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:_currentValue] forKey:_identifier];
-
-    for (id<FBTweakObserver> observer in [_observers setRepresentation]) {
-      [observer tweakDidChange:self];
-    }
   }
 }
 
-- (void)addObserver:(id<FBTweakObserver>)observer
-{
-  if (_observers == nil) {
-    _observers = [NSHashTable weakObjectsHashTable];
-  }
-  
-  NSAssert(observer != nil, @"observer is required");
-  [_observers addObject:observer];
+- (void)reset {
+  self.currentValue = nil;
 }
 
-- (void)removeObserver:(id<FBTweakObserver>)observer
-{
-  NSAssert(observer != nil, @"observer is required");
-  [_observers removeObject:observer];
+@end
+
+@implementation FBPersistentTweak
+
+- (instancetype)initWithIdentifier:(NSString *)identifier name:(NSString *)name
+                      defaultValue:(FBTweakValue)defaultValue {
+  if (self = [super initWithIdentifier:identifier name:name defaultValue:defaultValue]) {
+    NSData *archivedValue = [[NSUserDefaults standardUserDefaults] objectForKey:identifier];
+    self.currentValue = (archivedValue != nil && [archivedValue isKindOfClass:[NSData class]] ?
+                         [NSKeyedUnarchiver unarchiveObjectWithData:archivedValue] : archivedValue);
+  }
+
+  return self;
+}
+
+- (void)setCurrentValue:(FBTweakValue)currentValue {
+  [super setCurrentValue:currentValue];
+  // we can't store UIColor to the plist file. That is why we archive value to the NSData.
+  [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:currentValue] forKey:self.identifier];
 }
 
 @end

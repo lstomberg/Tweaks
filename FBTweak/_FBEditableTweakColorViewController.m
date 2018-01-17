@@ -7,7 +7,7 @@
  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import "_FBTweakColorViewController.h"
+#import "_FBEditableTweakColorViewController.h"
 #import "_FBTweakColorViewControllerHSBDataSource.h"
 #import "_FBTweakColorViewControllerRGBDataSource.h"
 #import "_FBTweakColorViewControllerHexDataSource.h"
@@ -24,23 +24,22 @@ static void *kContext = &kContext;
 static CGFloat const _FBTweakColorCellDefaultHeight = 44.0;
 static CGFloat const _FBColorWheelCellHeight = 220.0f;
 
-@interface _FBTweakColorViewController () <UITableViewDelegate>
+@interface _FBEditableTweakColorViewController () <UITableViewDelegate>
 
 @end
 
-@implementation _FBTweakColorViewController {
+@implementation _FBEditableTweakColorViewController {
   NSObject<_FBTweakColorViewControllerDataSource> *_rgbDataSource;
   NSObject<_FBTweakColorViewControllerDataSource> *_hsbDataSource;
   NSObject<_FBTweakColorViewControllerDataSource> *_hexDataSource;
-  FBTweak *_tweak;
   _FBKeyboardManager *_keyboardManager;
   UITableView *_tableView;
 }
 
-- (instancetype)initWithTweak:(FBTweak *)tweak
+- (instancetype)initWithEditableTweak:(id<FBEditableTweak>)tweak
 {
   NSParameterAssert([tweak.defaultValue isKindOfClass:[UIColor class]]);
-  if (self = [super init]) {
+  if ((self = [super initWithNibName:nil bundle:nil])) {
     _tweak = tweak;
     _rgbDataSource = [[_FBTweakColorViewControllerRGBDataSource alloc] init];
     _hsbDataSource = [[_FBTweakColorViewControllerHSBDataSource alloc] init];

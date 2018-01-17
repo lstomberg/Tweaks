@@ -104,7 +104,7 @@ typedef NS_ENUM(unsigned long, UnsignedLongEnum) {
 // All values should be converted to the same type as the default.
 - (void)testMixedRangeTypes
 {
-  FBTweak *mixedFloatTweak = FBTweakInline(@"Mixed Float", @"Mixed Float", @"Mixed Float", (float)1.0, (double)1.0, (long)1.0);
+  FBPersistentTweak *mixedFloatTweak = FBTweakInline(@"Mixed Float", @"Mixed Float", @"Mixed Float", (float)1.0, (double)1.0, (long)1.0);
   XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedFloatTweak.defaultValue objCType]], @"f", @"Mixed Float Default %s", [mixedFloatTweak.defaultValue objCType]);
   XCTAssertEqual([mixedFloatTweak.defaultValue floatValue], (float)1.0, @"Mixed Float Default %@", mixedFloatTweak.defaultValue);
   XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedFloatTweak.minimumValue objCType]], @"f", @"Mixed Float Minimum %s", [mixedFloatTweak.minimumValue objCType]);
@@ -112,7 +112,7 @@ typedef NS_ENUM(unsigned long, UnsignedLongEnum) {
   XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedFloatTweak.maximumValue objCType]], @"f", @"Mixed Float Maximum %s", [mixedFloatTweak.maximumValue objCType]);
   XCTAssertEqual([mixedFloatTweak.maximumValue floatValue], (float)1.0, @"Mixed Float Maximum %@", mixedFloatTweak.maximumValue);
 
-  FBTweak *mixedIntTweak = FBTweakInline(@"Mixed Int", @"Mixed Int", @"Mixed Int", (int)1, (char)1, (double)1);
+  FBPersistentTweak *mixedIntTweak = FBTweakInline(@"Mixed Int", @"Mixed Int", @"Mixed Int", (int)1, (char)1, (double)1);
   XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedIntTweak.defaultValue objCType]], @"i", @"Mixed Int Default %@", mixedIntTweak.defaultValue);
   XCTAssertEqual([mixedIntTweak.defaultValue floatValue], (int)1, @"Mixed Int Default %@", mixedIntTweak.defaultValue);
   XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedIntTweak.minimumValue objCType]], @"i", @"Mixed Int Minimum %@", mixedIntTweak.minimumValue);
@@ -139,7 +139,7 @@ typedef NS_ENUM(unsigned long, UnsignedLongEnum) {
   FBTweakBind(v, timeoutInterval, @"URL", @"Request", @"Bind", 5.0);
   XCTAssertEqual(v.timeoutInterval, (NSTimeInterval)5.0, @"request %@", v);
   
-  FBTweak *m = FBTweakInline(@"URL", @"Request", @"Bind", 5.0);
+  FBPersistentTweak *m = FBTweakInline(@"URL", @"Request", @"Bind", 5.0);
   m.currentValue = @(20.0);
   XCTAssertEqual(v.timeoutInterval, (NSTimeInterval)20.0, @"request %@ %@", v, m);
 
@@ -147,7 +147,7 @@ typedef NS_ENUM(unsigned long, UnsignedLongEnum) {
   FBTweakBind(o, unsignedLongProperty, @"Test", @"Object", @"Long", UnsignedLongEnumInfo, UnsignedLongEnumOff, UnsignedLongEnumError);
   XCTAssertEqual(o.unsignedLongProperty, UnsignedLongEnumInfo, @"test object: %@", @(o.unsignedLongProperty));
 
-  FBTweak *oTweak = FBTweakInline(@"Test", @"Object", @"Long", UnsignedLongEnumInfo);
+  FBPersistentTweak *oTweak = FBTweakInline(@"Test", @"Object", @"Long", UnsignedLongEnumInfo);
   oTweak.currentValue = @(UnsignedLongEnumWarn);
   XCTAssertEqual(o.unsignedLongProperty, UnsignedLongEnumWarn, @"test object: %@", @(o.unsignedLongProperty));
 }
