@@ -9,46 +9,55 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol FBTweak;
 
 /**
-  @abstract A named collection of tweaks.
+ @abstract A named collection of Tweaks.
  */
-@interface FBTweakCollection : NSObject <NSCoding>
+@interface FBTweakCollection : NSObject
+
+- (instancetype)init NS_UNAVAILABLE;
 
 /**
-  @abstract Creates a tweak collection.
-  @discussion This is the designated initializer.
+ @abstract Creates an empty Tweak collection.
  */
 - (instancetype)initWithName:(NSString *)name;
 
 /**
-  @abstract The name of the collection.
+ @abstract Creates a tweak category with an initial Tweak array.
  */
-@property (nonatomic, copy, readonly) NSString *name;
+- (instancetype)initWithName:(NSString *)name tweaks:(NSArray<id<FBTweak>> *)tweaks NS_DESIGNATED_INITIALIZER;
 
 /**
-  @abstract The tweaks contained in this collection.
+ @abstract The name of the collection.
  */
-@property (nonatomic, copy, readonly) NSArray *tweaks;
+@property (readonly, nonatomic) NSString *name;
 
 /**
-  @abstract Fetches a tweak by identifier.
-  @param identifier The tweak identifier to find.
-  @discussion Only search tweaks in this collection.
+ @abstract The Tweaks contained in this collection.
  */
-- (id<FBTweak>)tweakWithIdentifier:(NSString *)identifier;
+@property (readonly, nonatomic) NSArray<id<FBTweak>> *tweaks;
 
 /**
-  @abstract Adds a tweak to the collection.
-  @param tweak The tweak to add.
+ @abstract Fetches a Tweak by identifier. Returns \c nil no Tweak with \c identifier can be found.
+ @param Identifier The Tweak identifier to find.
+ */
+- (id<FBTweak> _Nullable)tweakWithIdentifier:(NSString *)identifier;
+
+/**
+ @abstract Adds a Tweak to the collection.
+ @param tweak The Tweak to add.
  */
 - (void)addTweak:(id<FBTweak>)tweak;
 
 /**
-  @abstract Removes a tweak from the collection.
-  @param tweak The tweak to remove.
+ @abstract Removes a Tweak from the collection.
+ @param tweak The Tweak to remove.
  */
 - (void)removeTweak:(id<FBTweak>)tweak;
 
 @end
+
+NS_ASSUME_NONNULL_END
